@@ -1,13 +1,58 @@
 import bpy
-from .setup_tools.register import register_prop
-# from .tools import mts_constants as mtc
+from .setup_tools.register import register_prop, register_wrap
+from .tools import constants as ct
+from .tools import utils as ut
 
-# register_prop(bpy.types.Material, mtc.IS_MTS_MATERIAL, bpy.props.BoolProperty(name=mtc.IS_MTS_MATERIAL, default=False))
-# register_prop(bpy.types.Material, mtc.PAINTWORKFLOW_TYPE, bpy.props.StringProperty(name=mtc.PAINTWORKFLOW_TYPE, default=''))
-# register_prop(bpy.types.Material, mtc.MTS_TEX_SIZE, bpy.props.IntProperty(name=mtc.MTS_TEX_SIZE, default=1024))
-# register_prop(bpy.types.Material, mtc.MTS_TEX_FOLDER, bpy.props.StringProperty(name=mtc.MTS_TEX_FOLDER, default=''))
+# register_prop(
+#         bpy.types.Scene, 
+#         ct.TARGET_COLLECTION, 
+#         bpy.props.EnumProperty(
+#             name=ct.TARGET_COLLECTION,
+#             description="Objects in this collection will share the same shape key",
+#             items=ut.get_collections_in_current_scene
+#             ))
 
-# register_prop(bpy.types.WindowManager, 'last_eraser', bpy.props.StringProperty(name='last_eraser', default='Erase Hard'))
-# register_prop(bpy.types.WindowManager, 'last_blend_mode', bpy.props.StringProperty(name='last_blend_mode', default='MIX'))
+# def set_unique_key_name(self, value):
+#     self['Name'] = value
+#     print("set_unique_key_name called")
 
-# register_prop(bpy.types.Object, 'my_string2', bpy.props.StringProperty(name='my_string2', default='Hello2222!'))
+#     return
+
+# register_prop(
+#         bpy.types.Scene,
+#         'col_string', bpy.props.StringProperty(name='col_string')
+#         )
+
+
+def poll_is_collection_in_active_scene(self, collection):
+    return collection in bpy.context.scene.collection.children_recursive
+
+register_prop(
+        bpy.types.Scene,
+        ct.TARGET_COLLECTION, bpy.props.PointerProperty(type=bpy.types.Collection, poll=poll_is_collection_in_active_scene)
+        )
+
+
+@register_wrap
+class ShapeKeyInterfaceCollection(bpy.types.PropertyGroup):
+    name: bpy.props.StringProperty(name="Name") # type: ignore
+    value: bpy.props.FloatProperty(name="Value", subtype='FACTOR') # type: ignore
+
+
+
+# bpy.types.Scene.shape_key_interface_collection = bpy.props.CollectionProperty(type=ShapeKeyInterfaceCollection)
+
+register_prop(
+        bpy.types.Scene,
+        ct.SHAPE_KEY_INTERFACE_COLLECTION,
+        bpy.props.CollectionProperty(type=ShapeKeyInterfaceCollection)
+        )
+
+register_prop(
+        bpy.types.Scene,
+        ct.SHAPE_KEY_INDEX,
+        bpy.props.IntProperty(name=ct.SHAPE_KEY_INDEX)
+        )
+
+
+
