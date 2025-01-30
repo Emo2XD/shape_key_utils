@@ -8,8 +8,8 @@ class SHAPEKEYUTILS_UL_shape_key_interface_items(bpy.types.UIList):
     def draw_item(self, context, layout, data, item, icon, active_data, active_propname, index):
         if self.layout_type in {'DEFAULT', 'COMPACT'}:
             # layout.label(text=item.name)
-            layout.prop(item, 'name')
-            layout.prop(item, 'value')
+            layout.prop(item, 'name', text="", emboss=False)
+            layout.prop(item, 'value', text="", emboss=False)
         elif self.layout_type == 'GRID':
             layout.alignment = 'CENTER'
             layout.label(text="")
@@ -42,15 +42,21 @@ class SHAPEKEYUTILS_PT_shape_key_utils(bpy.types.Panel):
 #         col.props_enum
         # light = bpy.data.lights[0]
         # layout.props_enum(light, "type")
-        scene = context.scene
+        wm = context.window_manager
         # col.prop_search(scene, 'col_string', bpy.data, 'collections')
         # col.prop_search(scene, 'col_string', scene.collection, 'children_recursive')
-        layout.prop(scene, ct.TARGET_COLLECTION)
+        layout.prop(wm, ct.TARGET_COLLECTION, text="")
 
         row = layout.row()
-        row.template_list(SHAPEKEYUTILS_UL_shape_key_interface_items.__name__, "", scene, ct.SHAPE_KEY_INTERFACE_COLLECTION, scene, ct.SHAPE_KEY_INDEX)
+        row.template_list(SHAPEKEYUTILS_UL_shape_key_interface_items.__name__, "", wm, ct.SHAPE_KEY_INTERFACE_COLLECTION, wm, ct.SHAPE_KEY_INDEX)
 
         col = row.column(align=True)
         col.operator(ot.SHAPEKEYUTILS_OT_add_shape_key_interface.bl_idname, text="", icon='ADD')
-        # row.template_list("MY_UL_items", "", scene, "my_collection", scene, "my_collection_index")
+        col.operator(ot.SHAPEKEYUTILS_OT_remove_shape_key_interface.bl_idname, text="", icon='REMOVE')
+        
+
+        col.separator()
+        col.operator(ot.SHAPEKEYUTILS_OT_move_shape_key_interface.bl_idname, text="", icon='TRIA_UP').move_type = 'UP'
+        col.operator(ot.SHAPEKEYUTILS_OT_move_shape_key_interface.bl_idname, text="", icon='TRIA_DOWN').move_type = 'DOWN'
+        
         return

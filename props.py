@@ -28,7 +28,7 @@ def poll_is_collection_in_active_scene(self, collection):
     return collection in bpy.context.scene.collection.children_recursive
 
 register_prop(
-        bpy.types.Scene,
+        bpy.types.WindowManager,
         ct.TARGET_COLLECTION, bpy.props.PointerProperty(type=bpy.types.Collection, poll=poll_is_collection_in_active_scene)
         )
 
@@ -36,20 +36,20 @@ register_prop(
 @register_wrap
 class ShapeKeyInterfaceCollection(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name") # type: ignore
-    value: bpy.props.FloatProperty(name="Value", subtype='FACTOR') # type: ignore
+    value: bpy.props.FloatProperty(name="Value", subtype='FACTOR', min=0.0, max=1.0, default=0.0) # type: ignore
 
 
 
 # bpy.types.Scene.shape_key_interface_collection = bpy.props.CollectionProperty(type=ShapeKeyInterfaceCollection)
 
 register_prop(
-        bpy.types.Scene,
+        bpy.types.WindowManager,
         ct.SHAPE_KEY_INTERFACE_COLLECTION,
         bpy.props.CollectionProperty(type=ShapeKeyInterfaceCollection)
         )
 
 register_prop(
-        bpy.types.Scene,
+        bpy.types.WindowManager,
         ct.SHAPE_KEY_INDEX,
         bpy.props.IntProperty(name=ct.SHAPE_KEY_INDEX)
         )
