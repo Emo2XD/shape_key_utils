@@ -56,3 +56,8 @@ register_prop(
 
 
 
+register_prop(
+        bpy.types.WindowManager,
+        ct.RECURSIVE,
+        bpy.props.BoolProperty(name=ct.RECURSIVE, default=True, description='If True, search objects recursively in nested collections')
+        )
