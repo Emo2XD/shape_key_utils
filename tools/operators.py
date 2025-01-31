@@ -121,6 +121,28 @@ class SHAPEKEYUTILS_OT_get_sk_interface_from_collection(bpy.types.Operator):
         ut.get_sk_from_collection_and_add_to_interface(self, context)
         return {"FINISHED"}
 
+
+@register_wrap
+class SHAPEKEYUTILS_OT_add_missing_shape_key(bpy.types.Operator):
+    bl_idname = "shape_key_utils.add_missing_shape_key"
+    bl_label = "Add Missing Shape Key"
+    bl_description = "Add missing shape key to mesh object inside collection compare to shape key interface."
+
+    
+    @classmethod
+    def poll(self, context):
+        return getattr(context.scene, ct.TARGET_COLLECTION) is not None
+
+    def execute(self, context):
+        self.report({'INFO'}, f"added missing shape key(not implemented yet.)")
+        return {"FINISHED"}
+
+
+
+
+
+
+
 @register_wrap
 class SHAPEKEYUTILS_OT_test_x(bpy.types.Operator):
     """Test"""

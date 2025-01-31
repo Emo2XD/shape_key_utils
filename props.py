@@ -51,7 +51,7 @@ register_prop(
 register_prop(
         bpy.types.Scene,
         ct.SHAPE_KEY_INDEX,
-        bpy.props.IntProperty(name=ct.SHAPE_KEY_INDEX)
+        bpy.props.IntProperty(name=ct.SHAPE_KEY_INDEX, update=ut.set_active_index_callback),
         )
 
 

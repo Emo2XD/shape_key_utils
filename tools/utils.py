@@ -2,7 +2,7 @@ import bpy
 from ..myblendrc_utils import utils as myu
 from . import constants as ct
 from typing import List
-
+from collections import OrderedDict
 
 # def get_collections_in_current_scene(self, context:bpy.types.Context):
 #     """Callback function to get collections in current scene for shape key at once feature"""
@@ -128,6 +128,56 @@ def get_sk_from_collection_and_add_to_interface(self, context:bpy.types.Context)
 
 
     setattr(sn, ct.SHAPE_KEY_INDEX, original_index)
+
+    return
+
+
+def get_index_of_key(d:dict, key:str)->int:
+    """get index of key from dictionary"""
+    keys = list(d.keys())
+    try:
+        return keys.index(key)
+    except ValueError:
+        return None
+
+
+def set_active_shape_key_index_by_name(obj:bpy.types.Object, sk_name:str):
+    """sets active shape key index by name with error_handled
+    """
+    shape_keys = obj.data.shape_keys
+    if shape_keys is None:
+        print(f"object '{obj.name}' does not have shape key")
+        return
+
+    index = get_index_of_key(obj.data.shape_keys.key_blocks, sk_name)
+
+    
+    if index is None:
+        print(f"object '{obj.name}' does not have key '{sk_name}'")
+        return
+
+    obj.active_shape_key_index = index
+    return
+    
+    pass
+
+
+def set_active_index_callback(self, context):
+    """ Callback function when update shape key interface index.
+    When update shape key interface index, this function loops all the targeted 
+    object's shape key and set active key slot
+    """
+    # print(getattr(context.scene, ct.SHAPE_KEY_INDEX))
+    target_collection = getattr(context.scene, ct.TARGET_COLLECTION)
+    recursive = getattr(context.scene, ct.RECURSIVE)
+    sk_interface_collection = getattr(context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+    sk_interface_index =  getattr(context.scene, ct.SHAPE_KEY_INDEX)
+    sk_interface_name = sk_interface_collection[sk_interface_index].name
+    objs = myu.get_mesh_object_in_collection(target_collection, recursive)
+
+
+    for o in objs:
+        set_active_shape_key_index_by_name(o, sk_interface_name)
 
     return
 
