@@ -36,7 +36,7 @@ register_prop(
 @register_wrap
 class ShapeKeyInterfaceCollection(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name") # type: ignore
-    value: bpy.props.FloatProperty(name="Value", subtype='FACTOR', min=0.0, max=1.0, default=0.0) # type: ignore
+    value: bpy.props.FloatProperty(name="Value", subtype='FACTOR', min=0.0, max=1.0, default=0.0, update=ut.set_shape_key_value_callback) # type: ignore
 
 
 

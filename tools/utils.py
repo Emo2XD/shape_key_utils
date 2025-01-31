@@ -159,7 +159,6 @@ def set_active_shape_key_index_by_name(obj:bpy.types.Object, sk_name:str):
     obj.active_shape_key_index = index
     return
     
-    pass
 
 
 def set_active_index_callback(self, context):
@@ -182,4 +181,23 @@ def set_active_index_callback(self, context):
     return
 
 
+def set_shape_key_value_callback(self, context):
+    """Callback function when setting value in shape key interface.
+    When setting value to shape key interface, this callback function update
+    all the corresponding shape key value in the collection.
+    """
+    target_collection = getattr(context.scene, ct.TARGET_COLLECTION)
+    recursive = getattr(context.scene, ct.RECURSIVE)
+    sk_interface_name = self.name
+    sk_interface_val = self.value
+    objs = myu.get_mesh_object_in_collection(target_collection, recursive)
 
+
+    for o in objs:
+        shape_key = o.data.shape_keys
+        if shape_key is not None:
+            kb = shape_key.key_blocks.get(sk_interface_name)
+            if kb is not None:
+                kb.value = sk_interface_val
+    
+    return
