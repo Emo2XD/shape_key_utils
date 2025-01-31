@@ -19,49 +19,49 @@ from typing import List
 #     return enum_list
 
 # TODO: adds option to use custom name other than 'Key'?
-def add_shape_key_interface(wm:bpy.types.WindowManager):
+def add_shape_key_interface(sn:bpy.types.Scene):
     """Add shape key interface
-    add shape key interface to wm.shape_key_interface_collection
+    add shape key interface to sn.shape_key_interface_collection
     """
-    sk_interface_collection = getattr(wm, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+    sk_interface_collection = getattr(sn, ct.SHAPE_KEY_INTERFACE_COLLECTION)
     sk_interface = sk_interface_collection.add()
 
 
     sk_interface.name = myu.new_unique_name_gen('Key', [f.name for f in sk_interface_collection])
 
-    # active_slot_index = getattr(wm, ct.SHAPE_KEY_INDEX)
-    setattr(wm, ct.SHAPE_KEY_INDEX, len(sk_interface_collection)-1)
+    # active_slot_index = getattr(sn, ct.SHAPE_KEY_INDEX)
+    setattr(sn, ct.SHAPE_KEY_INDEX, len(sk_interface_collection)-1)
 
 
     return
 
 
 
-def remove_active_shape_key_interface(wm:bpy.types.WindowManager):
+def remove_active_shape_key_interface(sn:bpy.types.Scene):
     """remove shape key interface
-    Remove shape key interface to wm.shape_key_interface_collection
+    Remove shape key interface to sn.shape_key_interface_collection
     
     Args:
-        wm: WindowManager
+        sn: Scene
         type:str, 'UP' or 'DOWN'
 
     """
-    sk_interface_collection = getattr(wm, ct.SHAPE_KEY_INTERFACE_COLLECTION)
-    active_slot_index = getattr(wm, ct.SHAPE_KEY_INDEX)
+    sk_interface_collection = getattr(sn, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+    active_slot_index = getattr(sn, ct.SHAPE_KEY_INDEX)
 
     sk_interface_collection.remove(active_slot_index)
 
     new_index = min(len(sk_interface_collection)-1, active_slot_index)
 
-    setattr(wm, ct.SHAPE_KEY_INDEX, new_index)
+    setattr(sn, ct.SHAPE_KEY_INDEX, new_index)
     return
 
 
-def move_shap_key_interface(wm:bpy.types.WindowManager, move_type:str='UP'):
+def move_shap_key_interface(sn:bpy.types.Scene, move_type:str='UP'):
     """Move shapkey interface
     """
-    sk_interface_collection = getattr(wm, ct.SHAPE_KEY_INTERFACE_COLLECTION)
-    active_slot_index = getattr(wm, ct.SHAPE_KEY_INDEX)
+    sk_interface_collection = getattr(sn, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+    active_slot_index = getattr(sn, ct.SHAPE_KEY_INDEX)
     sk_len = len(sk_interface_collection)
     
 
@@ -77,7 +77,7 @@ def move_shap_key_interface(wm:bpy.types.WindowManager, move_type:str='UP'):
 
     sk_interface_collection.move(move_from, move_to)
 
-    setattr(wm, ct.SHAPE_KEY_INDEX, move_to)
+    setattr(sn, ct.SHAPE_KEY_INDEX, move_to)
     return
     
 
@@ -110,15 +110,15 @@ def get_unique_key_block_name_in_collection(collection:bpy.types.Collection, rec
 def get_sk_from_collection_and_add_to_interface(self, context:bpy.types.Context):
     """Get Shape Key interface from collection.
     """
-    wm = context.window_manager
+    sn = context.scene
     
-    use_recursive = getattr(wm, ct.RECURSIVE)
-    target_collection = getattr(wm, ct.TARGET_COLLECTION) 
+    use_recursive = getattr(sn, ct.RECURSIVE)
+    target_collection = getattr(sn, ct.TARGET_COLLECTION) 
     key_block_names = get_unique_key_block_name_in_collection(target_collection, use_recursive)
 
-    sk_interface_collection = getattr(wm, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+    sk_interface_collection = getattr(sn, ct.SHAPE_KEY_INTERFACE_COLLECTION)
 
-    original_index = getattr(wm, ct.SHAPE_KEY_INDEX)
+    original_index = getattr(sn, ct.SHAPE_KEY_INDEX)
 
     for kb_n in key_block_names:
         # Avoid duplication
@@ -127,7 +127,7 @@ def get_sk_from_collection_and_add_to_interface(self, context:bpy.types.Context)
             sk_interface.name = kb_n
 
 
-    setattr(wm, ct.SHAPE_KEY_INDEX, original_index)
+    setattr(sn, ct.SHAPE_KEY_INDEX, original_index)
 
     return
 

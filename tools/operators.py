@@ -15,7 +15,7 @@ class SHAPEKEYUTILS_OT_add_shape_key_interface(bpy.types.Operator):
 
     def execute(self, context):
         self.report({'INFO'}, f"add shape key interface executed")
-        ut.add_shape_key_interface(context.window_manager)
+        ut.add_shape_key_interface(context.scene)
         return {'FINISHED'}
 
 
@@ -27,11 +27,11 @@ class SHAPEKEYUTILS_OT_remove_shape_key_interface(bpy.types.Operator):
 
     @classmethod
     def poll(self, context):
-        sk_collection = getattr(context.window_manager, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+        sk_collection = getattr(context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
         return len(sk_collection) > 0
 
     def execute(self, context):
-        ut.remove_active_shape_key_interface(context.window_manager)
+        ut.remove_active_shape_key_interface(context.scene)
         self.report({'INFO'}, f"remove shape key interface executed")
         return {'FINISHED'}
 
@@ -46,7 +46,7 @@ class SHAPEKEYUTILS_OT_move_shape_key_interface(bpy.types.Operator):
     move_type: bpy.props.EnumProperty(name='Type', items=[('UP', 'UP', ''), ('DOWN', 'DOWN', '')]) # type: ignore
 
     def execute(self, context):
-        ut.move_shap_key_interface(context.window_manager, move_type=self.move_type)
+        ut.move_shap_key_interface(context.scene, move_type=self.move_type)
         return {"FINISHED"}
 
 
@@ -115,7 +115,7 @@ class SHAPEKEYUTILS_OT_get_sk_interface_from_collection(bpy.types.Operator):
     
     @classmethod
     def poll(self, context):
-        return getattr(context.window_manager, ct.TARGET_COLLECTION) is not None
+        return getattr(context.scene, ct.TARGET_COLLECTION) is not None
 
     def execute(self, context):
         ut.get_sk_from_collection_and_add_to_interface(self, context)
@@ -130,9 +130,9 @@ class SHAPEKEYUTILS_OT_test_x(bpy.types.Operator):
 
 
     def execute(self, context):
-        # objs = get_mesh_object_in_collection(getattr(context.window_manager, ct.TARGET_COLLECTION), recursive=True)
+        # objs = get_mesh_object_in_collection(getattr(context.scene, ct.TARGET_COLLECTION), recursive=True)
         # pprint(objs)
-        # pprint(get_unique_key_block_name_in_collection(getattr(context.window_manager, ct.TARGET_COLLECTION), recursive=True))
+        # pprint(get_unique_key_block_name_in_collection(getattr(context.scene, ct.TARGET_COLLECTION), recursive=True))
        
 
         return {"FINISHED"}

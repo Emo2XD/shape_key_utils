@@ -42,16 +42,16 @@ class SHAPEKEYUTILS_PT_shape_key_utils(bpy.types.Panel):
 #         col.props_enum
         # light = bpy.data.lights[0]
         # layout.props_enum(light, "type")
-        wm = context.window_manager
+        sn = context.scene
         # col.prop_search(scene, 'col_string', bpy.data, 'collections')
         # col.prop_search(scene, 'col_string', scene.collection, 'children_recursive')
-        layout.prop(wm, ct.TARGET_COLLECTION, text="")
-        layout.prop(wm, ct.RECURSIVE, text="Recursive")
+        layout.prop(sn, ct.TARGET_COLLECTION, text="")
+        layout.prop(sn, ct.RECURSIVE, text="Recursive")
         layout.operator(ot.SHAPEKEYUTILS_OT_test_x.bl_idname, text="Test")
         layout.operator(ot.SHAPEKEYUTILS_OT_get_sk_interface_from_collection.bl_idname, text="Retrieve Interface")
 
         row = layout.row()
-        row.template_list(SHAPEKEYUTILS_UL_shape_key_interface_items.__name__, "", wm, ct.SHAPE_KEY_INTERFACE_COLLECTION, wm, ct.SHAPE_KEY_INDEX)
+        row.template_list(SHAPEKEYUTILS_UL_shape_key_interface_items.__name__, "", sn, ct.SHAPE_KEY_INTERFACE_COLLECTION, sn, ct.SHAPE_KEY_INDEX)
 
         col = row.column(align=True)
         col.operator(ot.SHAPEKEYUTILS_OT_add_shape_key_interface.bl_idname, text="", icon='ADD')

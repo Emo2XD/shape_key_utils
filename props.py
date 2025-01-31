@@ -28,7 +28,7 @@ def poll_is_collection_in_active_scene(self, collection):
     return collection in bpy.context.scene.collection.children_recursive
 
 register_prop(
-        bpy.types.WindowManager,
+        bpy.types.Scene,
         ct.TARGET_COLLECTION, bpy.props.PointerProperty(type=bpy.types.Collection, poll=poll_is_collection_in_active_scene)
         )
 
@@ -43,13 +43,13 @@ class ShapeKeyInterfaceCollection(bpy.types.PropertyGroup):
 # bpy.types.Scene.shape_key_interface_collection = bpy.props.CollectionProperty(type=ShapeKeyInterfaceCollection)
 
 register_prop(
-        bpy.types.WindowManager,
+        bpy.types.Scene,
         ct.SHAPE_KEY_INTERFACE_COLLECTION,
         bpy.props.CollectionProperty(type=ShapeKeyInterfaceCollection)
         )
 
 register_prop(
-        bpy.types.WindowManager,
+        bpy.types.Scene,
         ct.SHAPE_KEY_INDEX,
         bpy.props.IntProperty(name=ct.SHAPE_KEY_INDEX)
         )
@@ -57,7 +57,7 @@ register_prop(
 
 
 register_prop(
-        bpy.types.WindowManager,
+        bpy.types.Scene,
         ct.RECURSIVE,
         bpy.props.BoolProperty(name=ct.RECURSIVE, default=True, description='If True, search objects recursively in nested collections')
         )
