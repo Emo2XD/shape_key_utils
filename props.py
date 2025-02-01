@@ -72,14 +72,14 @@ register_prop(
         )
 
 
-register_prop(
-        bpy.types.Scene,
-        ct.SHOW_ONLY_SHAPE_KEY,
-        bpy.props.BoolProperty(name=ct.SHOW_ONLY_SHAPE_KEY, default=False)
-        )
+# register_prop(
+#         bpy.types.Scene,
+#         ct.SHOW_ONLY_SHAPE_KEY,
+#         bpy.props.BoolProperty(name=ct.SHOW_ONLY_SHAPE_KEY, default=False)
+#         )
 
-register_prop(
-        bpy.types.Scene,
-        ct.USE_SHAPE_KEY_EDIT_MODE,
-        bpy.props.BoolProperty(name=ct.USE_SHAPE_KEY_EDIT_MODE, default=False)
-        )
+# register_prop(
+#         bpy.types.Scene,
+#         ct.USE_SHAPE_KEY_EDIT_MODE,
+#         bpy.props.BoolProperty(name=ct.USE_SHAPE_KEY_EDIT_MODE, default=False)
+#         )

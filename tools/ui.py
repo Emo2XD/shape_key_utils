@@ -57,7 +57,7 @@ class SHAPEKEYUTILS_PT_shape_key_utils(bpy.types.Panel):
         layout.prop(sn, ct.TARGET_COLLECTION, text="")
         layout.prop(sn, ct.RECURSIVE, text="Recursive")
         layout.prop(sn, ct.AUTO_LOCK, text="Auto Lock")
-        layout.operator(ot.SHAPEKEYUTILS_OT_test_x.bl_idname, text="Test")
+        # layout.operator(ot.SHAPEKEYUTILS_OT_test_x.bl_idname, text="Test")
         layout.operator(ot.SHAPEKEYUTILS_OT_get_sk_interface_from_collection.bl_idname, text="Retrieve Interface")
         layout.operator(ot.SHAPEKEYUTILS_OT_add_missing_shape_key.bl_idname, text="Add Missing Shape Keys")
 
@@ -74,12 +74,29 @@ class SHAPEKEYUTILS_PT_shape_key_utils(bpy.types.Panel):
         col.operator(ot.SHAPEKEYUTILS_OT_move_shape_key_interface.bl_idname, text="", icon='TRIA_UP').move_type = 'UP'
         col.operator(ot.SHAPEKEYUTILS_OT_move_shape_key_interface.bl_idname, text="", icon='TRIA_DOWN').move_type = 'DOWN'
 
+        col.separator()
+        col.operator(ot.SHAPEKEYUTILS_OT_set_lock_all_at_once.bl_idname, text="", icon='DECORATE_LOCKED').unlock = False
+        col.operator(ot.SHAPEKEYUTILS_OT_set_lock_all_at_once.bl_idname, text="", icon='DECORATE_UNLOCKED').unlock = True
+
         # split = layout.split(factor = 0.5, align=True)
         # row = split.row(align=True)
         row = layout.row(align=True)
-        row.prop(sn, ct.SHOW_ONLY_SHAPE_KEY, text="", icon="PINNED" if getattr(sn, ct.SHOW_ONLY_SHAPE_KEY) else "UNPINNED")
-        row.prop(sn, ct.USE_SHAPE_KEY_EDIT_MODE, text="", icon="EDITMODE_HLT")
+        # row.prop(sn, ct.SHOW_ONLY_SHAPE_KEY, text="", icon="PINNED" if getattr(sn, ct.SHOW_ONLY_SHAPE_KEY) else "UNPINNED")
+        # row.prop(sn, ct.USE_SHAPE_KEY_EDIT_MODE, text="", icon="EDITMODE_HLT")
 
+        row.operator(ot.SHAPEKEYUTILS_OT_set_show_only_at_once.bl_idname, text="", icon="PINNED").show_only = True
+        row.operator(ot.SHAPEKEYUTILS_OT_set_show_only_at_once.bl_idname, text="", icon="UNPINNED").show_only = False
+
+
+        # row.separator_spacer()
+        split = row.split(factor=0.7)
+        split.separator()
+        split.operator(ot.SHAPEKEYUTILS_OT_reset_shape_key_at_once.bl_idname, text="", icon="PANEL_CLOSE")
+
+
+        row = layout.row(align=True)
+        row.operator(ot.SHAPEKEYUTILS_OT_set_shape_key_edit_mode.bl_idname, text="Enable", icon="EDITMODE_HLT").shape_key_edit_mode = True
+        row.operator(ot.SHAPEKEYUTILS_OT_set_shape_key_edit_mode.bl_idname, text="Desable", icon="EDITMODE_HLT").shape_key_edit_mode = False
 
 
         

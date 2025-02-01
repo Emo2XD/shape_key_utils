@@ -327,3 +327,125 @@ def add_missing_shape_keys(context:bpy.types.Context):
                 new_kb.value = kbi.value
                 new_kb.lock_shape = kbi.lock_shape
                 print(f"Shape key '{kbi.name}' was added to object '{o.name}'")
+
+
+
+def lock_all_shape_key_at_once(context:bpy.types.Context, unlock:bool=False):
+    set_key_block_prop_at_once(context=context, prop_name='lock_shape', set_value=(not unlock), exclude_active=False)
+    return
+
+
+def show_only_shape_key_at_once(context:bpy.types.Context, show:bool=False):
+    set_obj_prop_at_once(context=context, prop_name='show_only_shape_key', set_value=show)
+    return
+    
+
+def shape_key_edit_mode_at_once(context:bpy.types.Context, display:bool=False):
+    set_obj_prop_at_once(context=context, prop_name='use_shape_key_edit_mode', set_value=display)
+    return
+
+
+def reset_shape_key_value_at_once(context:bpy.types.Context, exclude_active:bool=False):
+    set_key_block_prop_at_once(context=context, prop_name='value', set_value=0.0, exclude_active=exclude_active)
+    return
+
+
+def set_key_block_prop_at_once(context:bpy.types.Context, prop_name:str, set_value:any, exclude_active:bool=False):
+    """Set key block properties to all given objects
+    Example Usage:
+    to change shape key value
+        set_key_block_prop_at_once(objs, 'value', 0)
+    
+    to change lock status
+        set_key_block_prop_at_once(objs, 'lock_shape', True)
+    """
+    scene = context.scene
+    target_collection = getattr(scene, ct.TARGET_COLLECTION)
+
+    if target_collection is None:
+        print("No collection is selected for shape key interface")
+        return
+
+
+    recursive = getattr(scene, ct.RECURSIVE)
+    sk_interface_collection = getattr(scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+    objs = myu.get_mesh_object_in_collection(target_collection, recursive)
+
+
+    # set_key_block_prop_at_once(objs, prop_name=prop_name, set_value=0.0)
+    for o in objs:
+        set_prop_to_key_blocks(o, prop_name, set_value)
+
+    if len(sk_interface_collection) == 0:
+        return
+    
+    active_index = getattr(scene, ct.SHAPE_KEY_INDEX)
+    active_ski = sk_interface_collection[active_index] # ski = shape key interface
+    orig_value = active_ski.value
+
+    # update shape key interface 
+    for ski in sk_interface_collection:
+        ski[prop_name] = set_value # intentionaly avoid activating setter.
+    
+    if exclude_active:
+        active_ski.value = orig_value # intentionally activate setter
+
+    return
+
+
+def set_obj_prop_at_once(context:bpy.types.Context, prop_name:str, set_value:any):
+    """Set object property at once to all the given objects
+     Example Usage:
+    to change show only shape key (Pin icon button in shape key)
+        set_shape_key_prop_at_once(objs, 'show_only_shape_key', True)
+    """
+    scene = context.scene
+    target_collection = getattr(scene, ct.TARGET_COLLECTION)
+
+    if target_collection is None:
+        print("No collection is selected for shape key interface")
+        return
+
+    # sk_interface_collection = getattr(scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+    recursive = getattr(scene, ct.RECURSIVE)
+    objs = myu.get_mesh_object_in_collection(target_collection, recursive)
+
+    for o in objs:
+        setattr(o, prop_name, set_value)
+        # set_shape_key_obj_prop(o, prop_name, set_value)
+        # shape_key = o.data.shape_keys
+        # if shape_key is not None:
+        #     setattr(shape_key, prop_name, set_value)
+
+
+    return
+
+
+def set_prop_to_key_blocks(obj:bpy.types.Object, prop_name:str, set_value:any):
+    """Set property to all key blocks on object (Error Handled)
+    Example Usage:
+    to change shape key value
+        set_prop_to_key_blocks(obj, 'value', 0)
+    
+    to change lock status
+        set_prop_to_key_blocks(obj, 'lock_shape', True)
+    """
+    
+    shape_key = obj.data.shape_keys
+    if shape_key is not None:
+        for kb in shape_key.key_blocks:
+            setattr(kb, prop_name, set_value)
+
+    return
+
+
+# def set_shape_key_obj_prop(obj:bpy.types.Object, prop_name:str, set_value:any):
+#     """Set object shape key property (Error handled)
+#      Example Usage:
+#     to change show only shape key (Pin icon button in shape key)
+#         set_prop_to_shape_key(obj, 'show_only_shape_key', True)
+#     """
+#     shape_key = obj.data.shape_keys
+#     if shape_key is not None:
+#         setattr(shape_key, prop_name, set_value)
+#     return
