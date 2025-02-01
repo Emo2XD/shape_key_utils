@@ -13,6 +13,8 @@ class SHAPEKEYUTILS_OT_add_shape_key_interface(bpy.types.Operator):
     bl_idname = "shape_key_utils.add_shape_key_interface"
     bl_label = "Add Shape Key Interface"
 
+    
+
     def execute(self, context):
         self.report({'INFO'}, f"add shape key interface executed")
         ut.add_shape_key_interface(context.scene)
@@ -139,6 +141,21 @@ class SHAPEKEYUTILS_OT_add_missing_shape_key(bpy.types.Operator):
 
 
 
+@register_wrap
+class SHAPEKEYUTILS_OT_lock_shape(bpy.types.Operator):
+    bl_idname = "shape_key_utils.lock_shape"
+    bl_label = "Lock Shape"
+    bl_description = "Lock shape. Shift click to lock others, ctrl click to only lock current, alt click for toggle all."
+
+    index: bpy.props.IntProperty(name='index') # type: ignore
+
+    def execute(self, context):
+        # sn = bpy.context.scene
+        # sk_inter_coll = getattr(sn, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+        # sk_inter = sk_inter_coll[self.index]
+        # sk_inter.lock_shape = not sk_inter.lock_shape
+        self.report({'INFO'}, f"lock shape (not implemented yet.)")
+        return {'FINISHED'}
 
 
 

@@ -37,6 +37,7 @@ register_prop(
 class ShapeKeyInterfaceCollection(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name") # type: ignore
     value: bpy.props.FloatProperty(name="Value", subtype='FACTOR', min=0.0, max=1.0, default=0.0, update=ut.set_shape_key_value_callback) # type: ignore
+    lock_shape: bpy.props.BoolProperty(name="lock_shape", update=ut.sk_interface_lock_shape_callback) # type: ignore
 
 
 
@@ -51,13 +52,33 @@ register_prop(
 register_prop(
         bpy.types.Scene,
         ct.SHAPE_KEY_INDEX,
-        bpy.props.IntProperty(name=ct.SHAPE_KEY_INDEX, update=ut.set_active_index_callback),
+        bpy.props.IntProperty(name=ct.SHAPE_KEY_INDEX, update=ut.update_sk_interface_callback),
         )
 
+
+register_prop(
+        bpy.types.Scene,
+        ct.LOCK_OTHERS,
+        bpy.props.BoolProperty(name=ct.LOCK_OTHERS, default=True,
+        update=ut.update_sk_interface_callback)
+        )
 
 
 register_prop(
         bpy.types.Scene,
         ct.RECURSIVE,
         bpy.props.BoolProperty(name=ct.RECURSIVE, default=True, description='If True, search objects recursively in nested collections')
+        )
+
+
+register_prop(
+        bpy.types.Scene,
+        ct.SHOW_ONLY_SHAPE_KEY,
+        bpy.props.BoolProperty(name=ct.SHOW_ONLY_SHAPE_KEY, default=False)
+        )
+
+register_prop(
+        bpy.types.Scene,
+        ct.USE_SHAPE_KEY_EDIT_MODE,
+        bpy.props.BoolProperty(name=ct.USE_SHAPE_KEY_EDIT_MODE, default=False)
         )

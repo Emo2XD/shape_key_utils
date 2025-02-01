@@ -109,6 +109,8 @@ def get_unique_key_block_name_in_collection(collection:bpy.types.Collection, rec
 
 def get_sk_from_collection_and_add_to_interface(self, context:bpy.types.Context):
     """Get Shape Key interface from collection.
+    It retrieves every shape key name from objects in target collection, 
+    and add to shape key interface collection.
     """
     sn = context.scene
     
@@ -141,8 +143,9 @@ def get_index_of_key(d:dict, key:str)->int:
         return None
 
 
-def set_active_shape_key_index_by_name(obj:bpy.types.Object, sk_name:str):
+def set_active_shape_key_index_by_name(obj:bpy.types.Object, sk_name:str, auto_lock:bool=True):
     """sets active shape key index by name with error_handled
+    This fucntion sets active shape_key, and lock status.
     """
     shape_keys = obj.data.shape_keys
     if shape_keys is None:
@@ -151,17 +154,54 @@ def set_active_shape_key_index_by_name(obj:bpy.types.Object, sk_name:str):
 
     index = get_index_of_key(obj.data.shape_keys.key_blocks, sk_name)
 
+    if auto_lock:
+        for kb in shape_keys.key_blocks:
+            kb.lock_shape = True
+
     
     if index is None:
         print(f"object '{obj.name}' does not have key '{sk_name}'")
         return
 
     obj.active_shape_key_index = index
+
+    # TODO: maybe unnecessary? because we update by shape key interface.
+    if auto_lock:
+        shape_keys.key_blocks[index].lock_shape = False
+    return
+
+
+
+def setup_sk_interface_auto_lock(sk_name:str):
+    """Set shape key interface auto lock status."""
+    kbi_collection = getattr(bpy.context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+
+    for kbi in kbi_collection:
+        kbi.lock_shape = True
+
+    kbi_collection[sk_name].lock_shape = False
+    
     return
     
+def sk_interface_lock_shape_callback(self, context):
+    """ Callback function for set shape key interface lock status.
+    """
+    # self["lock_shape"] =  value
+    # print(self['lock_shape']) 
+    # print(self) 
+    print('lock_shape update called')
+    return
+
+# def lock_others_callback(self, context):
+#     """ Callback function for lock others property"""
+#     if self[ct.LOCK_OTHERS]:
+#         ski_collection = getattr(context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+#         sk_name = ski_collection[getattr(ski_collection, ct.SHAPE_KEY_INDEX)].name
+#         setup_sk_interface_auto_lock(sk_name)
+#     return
 
 
-def set_active_index_callback(self, context):
+def update_sk_interface_callback(self, context):
     """ Callback function when update shape key interface index.
     When update shape key interface index, this function loops all the targeted 
     object's shape key and set active key slot
@@ -172,11 +212,22 @@ def set_active_index_callback(self, context):
     sk_interface_collection = getattr(context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
     sk_interface_index =  getattr(context.scene, ct.SHAPE_KEY_INDEX)
     sk_interface_name = sk_interface_collection[sk_interface_index].name
+    lock_others = getattr(context.scene, ct.LOCK_OTHERS)
+
+    if lock_others:
+        setup_sk_interface_auto_lock(sk_interface_name)
+
+    if target_collection is None:
+        print("No collection is selected for shape key interface")
+        return
+
     objs = myu.get_mesh_object_in_collection(target_collection, recursive)
 
 
     for o in objs:
-        set_active_shape_key_index_by_name(o, sk_interface_name)
+        set_active_shape_key_index_by_name(o, sk_interface_name, lock_others)
+
+
 
     return
 
@@ -187,6 +238,11 @@ def set_shape_key_value_callback(self, context):
     all the corresponding shape key value in the collection.
     """
     target_collection = getattr(context.scene, ct.TARGET_COLLECTION)
+
+    if target_collection is None:
+        print("No collection is selected for shape key interface")
+        return
+
     recursive = getattr(context.scene, ct.RECURSIVE)
     sk_interface_name = self.name
     sk_interface_val = self.value
