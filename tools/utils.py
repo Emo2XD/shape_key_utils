@@ -299,3 +299,31 @@ def set_shape_key_value_callback(self, context):
                 kb.value = sk_interface_val
     
     return
+
+
+
+def add_missing_shape_keys(context:bpy.types.Context):
+    """Add missing shape keys to objects in target collection."""
+    scene = context.scene
+    target_collection = getattr(scene, ct.TARGET_COLLECTION)
+
+    if target_collection is None:
+        print("No collection is selected for shape key interface")
+        return
+
+    recursive = getattr(scene, ct.RECURSIVE)
+    sk_interface_collection = getattr(scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+    objs = myu.get_mesh_object_in_collection(target_collection, recursive)
+
+    for o in objs:
+        if o.data.shape_keys == None:
+            o.shape_key_add(name="Basis") # make sure every objects have at least one shape key.
+
+
+    for o in objs:
+        for kbi in sk_interface_collection:
+            if o.data.shape_keys.key_blocks.get(kbi.name) == None:
+                new_kb = o.shape_key_add(name=kbi.name, from_mix=False)
+                new_kb.value = kbi.value
+                new_kb.lock_shape = kbi.lock_shape
+                print(f"Shape key '{kbi.name}' was added to object '{o.name}'")

@@ -141,7 +141,8 @@ class SHAPEKEYUTILS_OT_add_missing_shape_key(bpy.types.Operator):
         return getattr(context.scene, ct.TARGET_COLLECTION) is not None
 
     def execute(self, context):
-        self.report({'INFO'}, f"added missing shape key(not implemented yet.)")
+        ut.add_missing_shape_keys(context)
+        self.report({'INFO'}, f"added missing shape key, see console for more detail")
         return {"FINISHED"}
 
 
