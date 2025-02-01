@@ -47,6 +47,11 @@ class SHAPEKEYUTILS_OT_move_shape_key_interface(bpy.types.Operator):
     
     move_type: bpy.props.EnumProperty(name='Type', items=[('UP', 'UP', ''), ('DOWN', 'DOWN', '')]) # type: ignore
 
+    @classmethod
+    def poll(self, context):
+        sk_collection = getattr(context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+        return len(sk_collection) > 0
+
     def execute(self, context):
         ut.move_shap_key_interface(context.scene, move_type=self.move_type)
         return {"FINISHED"}

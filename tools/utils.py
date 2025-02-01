@@ -173,24 +173,49 @@ def set_active_shape_key_index_by_name(obj:bpy.types.Object, sk_name:str, auto_l
 
 
 def setup_sk_interface_auto_lock(sk_name:str):
-    """Set shape key interface auto lock status."""
+    """Set shape key interface auto lock status. (without activating setter for setting lock status)"""
     kbi_collection = getattr(bpy.context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
 
     for kbi in kbi_collection:
-        kbi.lock_shape = True
+        # kbi.lock_shape = True
+        kbi['lock_shape'] = True # suppress setter activation
 
-    kbi_collection[sk_name].lock_shape = False
+    # kbi_collection[sk_name].lock_shape = False
+    kbi_collection[sk_name]['lock_shape'] = False # suppress setter activation
     
     return
     
-def sk_interface_lock_shape_callback(self, context):
-    """ Callback function for set shape key interface lock status.
+def set_sk_interface_lock_shape_callback(self, value):
+    """ Callback function for set shape key interface lock status. (when you create custom setter, you also have to create getter.)
     """
-    # self["lock_shape"] =  value
-    # print(self['lock_shape']) 
-    # print(self) 
-    print('lock_shape update called')
+    self["lock_shape"] = value
+    context = bpy.context
+    target_collection = getattr(context.scene, ct.TARGET_COLLECTION)
+
+    if target_collection is None:
+        print("No collection is selected for shape key interface")
+        return
+
+    recursive = getattr(context.scene, ct.RECURSIVE)
+    sk_interface_name = self.name
+    sk_interface_val = self.value
+    objs = myu.get_mesh_object_in_collection(target_collection, recursive)
+
+
+    for o in objs:
+        shape_key = o.data.shape_keys
+        if shape_key is not None:
+            kb = shape_key.key_blocks.get(sk_interface_name)
+            if kb is not None:
+                kb.lock_shape = value
+    
     return
+
+
+
+def get_sk_interface_lock_shape_callback(self):
+    return self["lock_shape"]
+
 
 # def lock_others_callback(self, context):
 #     """ Callback function for lock others property"""
@@ -208,11 +233,17 @@ def update_sk_interface_callback(self, context):
     """
     # print(getattr(context.scene, ct.SHAPE_KEY_INDEX))
     target_collection = getattr(context.scene, ct.TARGET_COLLECTION)
+        
+
     recursive = getattr(context.scene, ct.RECURSIVE)
     sk_interface_collection = getattr(context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+
+    if len(sk_interface_collection) == 0:
+        return
+
     sk_interface_index =  getattr(context.scene, ct.SHAPE_KEY_INDEX)
     sk_interface_name = sk_interface_collection[sk_interface_index].name
-    lock_others = getattr(context.scene, ct.LOCK_OTHERS)
+    lock_others = getattr(context.scene, ct.AUTO_LOCK)
 
     if lock_others:
         setup_sk_interface_auto_lock(sk_interface_name)

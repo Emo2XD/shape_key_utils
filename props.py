@@ -37,7 +37,8 @@ register_prop(
 class ShapeKeyInterfaceCollection(bpy.types.PropertyGroup):
     name: bpy.props.StringProperty(name="Name") # type: ignore
     value: bpy.props.FloatProperty(name="Value", subtype='FACTOR', min=0.0, max=1.0, default=0.0, update=ut.set_shape_key_value_callback) # type: ignore
-    lock_shape: bpy.props.BoolProperty(name="lock_shape", update=ut.sk_interface_lock_shape_callback) # type: ignore
+    lock_shape: bpy.props.BoolProperty(name="lock_shape", set=ut.set_sk_interface_lock_shape_callback, get=ut.get_sk_interface_lock_shape_callback) # type: ignore
+    # lock_shape: bpy.props.BoolProperty(name="lock_shape", set=ut.sk_interface_lock_shape_callback) # type: ignore
 
 
 
@@ -58,9 +59,9 @@ register_prop(
 
 register_prop(
         bpy.types.Scene,
-        ct.LOCK_OTHERS,
-        bpy.props.BoolProperty(name=ct.LOCK_OTHERS, default=True,
-        update=ut.update_sk_interface_callback)
+        ct.AUTO_LOCK,
+        bpy.props.BoolProperty(name=ct.AUTO_LOCK, default=True)
+        # , update=ut.update_sk_interface_callback)
         )
 
 

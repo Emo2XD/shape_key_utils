@@ -56,7 +56,7 @@ class SHAPEKEYUTILS_PT_shape_key_utils(bpy.types.Panel):
         # col.prop_search(scene, 'col_string', scene.collection, 'children_recursive')
         layout.prop(sn, ct.TARGET_COLLECTION, text="")
         layout.prop(sn, ct.RECURSIVE, text="Recursive")
-        layout.prop(sn, ct.LOCK_OTHERS, text="Lock Others")
+        layout.prop(sn, ct.AUTO_LOCK, text="Auto Lock")
         layout.operator(ot.SHAPEKEYUTILS_OT_test_x.bl_idname, text="Test")
         layout.operator(ot.SHAPEKEYUTILS_OT_get_sk_interface_from_collection.bl_idname, text="Retrieve Interface")
         layout.operator(ot.SHAPEKEYUTILS_OT_add_missing_shape_key.bl_idname, text="Add Missing Shape Keys")
