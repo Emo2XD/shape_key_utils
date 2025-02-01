@@ -15,10 +15,7 @@ class SHAPEKEYUTILS_UL_shape_key_interface_items(bpy.types.UIList):
             row.emboss = 'NONE_OR_STATUS'
 
             row.prop(item, 'lock_shape', text="", emboss=False, icon='DECORATE_LOCKED' if item.lock_shape else 'DECORATE_UNLOCKED')
-            # row.operator(ot.SHAPEKEYUTILS_OT_lock_shape.bl_idname, text="", emboss=False, icon='DECORATE_LOCKED' if item.lock_shape else 'DECORATE_UNLOCKED').index = index
 
-            # layout.prop(item, 'name', text="", emboss=False)
-            # layout.prop(item, 'value', text="", emboss=False)
         elif self.layout_type == 'GRID':
             layout.alignment = 'CENTER'
             layout.label(text="")
@@ -29,31 +26,16 @@ class SHAPEKEYUTILS_PT_shape_key_utils(bpy.types.Panel):
     """Collection shape key
     """
     bl_idname = "SHAPEKEYUTILS_PT_shape_key_utils" 
-    bl_label = "Collection shape key"
+    bl_label = "Shape Key At Once"
     bl_space_type = 'VIEW_3D'
     bl_region_type = 'UI'
     bl_category = "Shape Key" # tab name
-    # bl_parent_id = ""
-
-    # @classmethod
-    # def poll(cls, context):
-    #     return (context.active_object is not None) and context.active_object.is_mip
 
     def draw(self, context):
         layout = self.layout
-
-        # col = layout.column(align=True)
-            
-
-        # col = self.layout.column(align=True)
         layout.label(text='Target Collection')
 
-#         col.props_enum
-        # light = bpy.data.lights[0]
-        # layout.props_enum(light, "type")
         sn = context.scene
-        # col.prop_search(scene, 'col_string', bpy.data, 'collections')
-        # col.prop_search(scene, 'col_string', scene.collection, 'children_recursive')
         layout.prop(sn, ct.TARGET_COLLECTION, text="")
         layout.prop(sn, ct.RECURSIVE, text="Recursive")
         layout.prop(sn, ct.AUTO_LOCK, text="Auto Lock")
@@ -78,26 +60,15 @@ class SHAPEKEYUTILS_PT_shape_key_utils(bpy.types.Panel):
         col.operator(ot.SHAPEKEYUTILS_OT_set_lock_all_at_once.bl_idname, text="", icon='DECORATE_LOCKED').unlock = False
         col.operator(ot.SHAPEKEYUTILS_OT_set_lock_all_at_once.bl_idname, text="", icon='DECORATE_UNLOCKED').unlock = True
 
-        # split = layout.split(factor = 0.5, align=True)
-        # row = split.row(align=True)
         row = layout.row(align=True)
-        # row.prop(sn, ct.SHOW_ONLY_SHAPE_KEY, text="", icon="PINNED" if getattr(sn, ct.SHOW_ONLY_SHAPE_KEY) else "UNPINNED")
-        # row.prop(sn, ct.USE_SHAPE_KEY_EDIT_MODE, text="", icon="EDITMODE_HLT")
-
         row.operator(ot.SHAPEKEYUTILS_OT_set_show_only_at_once.bl_idname, text="", icon="PINNED").show_only = True
         row.operator(ot.SHAPEKEYUTILS_OT_set_show_only_at_once.bl_idname, text="", icon="UNPINNED").show_only = False
 
-
-        # row.separator_spacer()
         split = row.split(factor=0.7)
         split.separator()
         split.operator(ot.SHAPEKEYUTILS_OT_reset_shape_key_at_once.bl_idname, text="", icon="PANEL_CLOSE")
 
-
         row = layout.row(align=True)
         row.operator(ot.SHAPEKEYUTILS_OT_set_shape_key_edit_mode.bl_idname, text="Enable", icon="EDITMODE_HLT").shape_key_edit_mode = True
         row.operator(ot.SHAPEKEYUTILS_OT_set_shape_key_edit_mode.bl_idname, text="Desable", icon="EDITMODE_HLT").shape_key_edit_mode = False
-
-
-        
         return

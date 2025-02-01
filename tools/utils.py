@@ -2,21 +2,7 @@ import bpy
 from ..myblendrc_utils import utils as myu
 from . import constants as ct
 from typing import List
-from collections import OrderedDict
 
-# def get_collections_in_current_scene(self, context:bpy.types.Context):
-#     """Callback function to get collections in current scene for shape key at once feature"""
-#     enum_list = []
-#     default = ('__default__', '__default__', '')
-#     enum_list.append(default)
-
-
-#     scene = context.scene
-#     if scene is not None:
-#         for c in scene.collection.children_recursive:
-#             enum = (c.name, c.name, '')
-#             enum_list.append(enum)
-#     return enum_list
 
 # TODO: adds option to use custom name other than 'Key'?
 def add_shape_key_interface(sn:bpy.types.Scene):
@@ -25,12 +11,8 @@ def add_shape_key_interface(sn:bpy.types.Scene):
     """
     sk_interface_collection = getattr(sn, ct.SHAPE_KEY_INTERFACE_COLLECTION)
     sk_interface = sk_interface_collection.add()
-
-
     sk_interface.name = myu.new_unique_name_gen('Key', [f.name for f in sk_interface_collection])
-    # sk_interface["lock_shape"] = False
 
-    # active_slot_index = getattr(sn, ct.SHAPE_KEY_INDEX)
     setattr(sn, ct.SHAPE_KEY_INDEX, len(sk_interface_collection)-1)
 
 
@@ -82,9 +64,6 @@ def move_shap_key_interface(sn:bpy.types.Scene, move_type:str='UP'):
     return
     
 
-
-
-
 def get_unique_key_block_name_in_collection(collection:bpy.types.Collection, recursive:bool=False)->List[str]:
     """ Get unique key blocks from objects in given collection.
     """
@@ -97,15 +76,6 @@ def get_unique_key_block_name_in_collection(collection:bpy.types.Collection, rec
         key_block_name_set = key_block_name_set.union(set(obj_key_block_names))
 
     return list(key_block_name_set)
-
-
-# def add_kb_to_interface(sk_name:str, interface_collection):
-#     """Add key block name to given interface collection
-#     sk_name: string name of key block
-#     interface_collection: bpy.props.CollectionProperty(type=ShapeKeyInterfaceCollection) 
-    # """
-
-
 
 
 def get_sk_from_collection_and_add_to_interface(self, context:bpy.types.Context):
@@ -128,7 +98,6 @@ def get_sk_from_collection_and_add_to_interface(self, context:bpy.types.Context)
         if kb_n not in sk_interface_collection:
             sk_interface = sk_interface_collection.add()
             sk_interface.name = kb_n
-            # sk_interface["lock_shape"] = False
 
 
     setattr(sn, ct.SHAPE_KEY_INDEX, original_index)
@@ -179,10 +148,8 @@ def setup_sk_interface_auto_lock(sk_name:str):
     kbi_collection = getattr(bpy.context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
 
     for kbi in kbi_collection:
-        # kbi.lock_shape = True
         kbi['lock_shape'] = True # suppress setter activation
 
-    # kbi_collection[sk_name].lock_shape = False
     kbi_collection[sk_name]['lock_shape'] = False # suppress setter activation
     
     return
@@ -200,7 +167,6 @@ def set_sk_interface_lock_shape_callback(self, value):
 
     recursive = getattr(context.scene, ct.RECURSIVE)
     sk_interface_name = self.name
-    sk_interface_val = self.value
     objs = myu.get_mesh_object_in_collection(target_collection, recursive)
 
 
@@ -412,12 +378,6 @@ def set_obj_prop_at_once(context:bpy.types.Context, prop_name:str, set_value:any
 
     for o in objs:
         setattr(o, prop_name, set_value)
-        # set_shape_key_obj_prop(o, prop_name, set_value)
-        # shape_key = o.data.shape_keys
-        # if shape_key is not None:
-        #     setattr(shape_key, prop_name, set_value)
-
-
     return
 
 
@@ -437,15 +397,3 @@ def set_prop_to_key_blocks(obj:bpy.types.Object, prop_name:str, set_value:any):
             setattr(kb, prop_name, set_value)
 
     return
-
-
-# def set_shape_key_obj_prop(obj:bpy.types.Object, prop_name:str, set_value:any):
-#     """Set object shape key property (Error handled)
-#      Example Usage:
-#     to change show only shape key (Pin icon button in shape key)
-#         set_prop_to_shape_key(obj, 'show_only_shape_key', True)
-#     """
-#     shape_key = obj.data.shape_keys
-#     if shape_key is not None:
-#         setattr(shape_key, prop_name, set_value)
-#     return

@@ -2,8 +2,6 @@ import bpy
 from ..setup_tools.register import register_wrap
 from . import utils as ut
 from . import constants as ct
-from .. myblendrc_utils import utils as myu
-from typing import List
 from pprint import pprint
 
 
