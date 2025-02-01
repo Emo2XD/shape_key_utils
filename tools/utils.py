@@ -28,6 +28,7 @@ def add_shape_key_interface(sn:bpy.types.Scene):
 
 
     sk_interface.name = myu.new_unique_name_gen('Key', [f.name for f in sk_interface_collection])
+    # sk_interface["lock_shape"] = False
 
     # active_slot_index = getattr(sn, ct.SHAPE_KEY_INDEX)
     setattr(sn, ct.SHAPE_KEY_INDEX, len(sk_interface_collection)-1)
@@ -127,6 +128,7 @@ def get_sk_from_collection_and_add_to_interface(self, context:bpy.types.Context)
         if kb_n not in sk_interface_collection:
             sk_interface = sk_interface_collection.add()
             sk_interface.name = kb_n
+            # sk_interface["lock_shape"] = False
 
 
     setattr(sn, ct.SHAPE_KEY_INDEX, original_index)
@@ -212,18 +214,27 @@ def set_sk_interface_lock_shape_callback(self, value):
     return
 
 
-
 def get_sk_interface_lock_shape_callback(self):
-    return self["lock_shape"]
+    # return self["lock_shape"]
+    return self.get('lock_shape', self.bl_rna.properties['lock_shape'].default) # to avoid value not assigned error.
 
 
-# def lock_others_callback(self, context):
-#     """ Callback function for lock others property"""
-#     if self[ct.LOCK_OTHERS]:
-#         ski_collection = getattr(context.scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
-#         sk_name = ski_collection[getattr(ski_collection, ct.SHAPE_KEY_INDEX)].name
-#         setup_sk_interface_auto_lock(sk_name)
-#     return
+
+def set_auto_lock_callback(self, value):
+    """ Callback function for auto lock property"""
+    self[ct.AUTO_LOCK] = value
+    if value == True:
+        scene = bpy.context.scene
+        ski_collection = getattr(scene, ct.SHAPE_KEY_INTERFACE_COLLECTION)
+        if len(ski_collection) > 0:
+            index = getattr(scene, ct.SHAPE_KEY_INDEX)
+            ski_collection[index].lock_shape = False # intentionally call setter.
+            setattr(scene, ct.SHAPE_KEY_INDEX, index)# intentionally call setter.
+
+
+def get_auto_lock_callback(self):
+    # return self[ct.AUTO_LOCK] self.get("testprop", self.bl_rna.properties["testprop"].default)
+    return self.get(ct.AUTO_LOCK, self.bl_rna.properties[ct.AUTO_LOCK].default)
 
 
 def update_sk_interface_callback(self, context):
