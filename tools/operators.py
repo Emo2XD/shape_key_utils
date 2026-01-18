@@ -188,8 +188,8 @@ class SHAPEKEYUTILS_OT_set_lock_all_at_once(bpy.types.Operator):
 @register_wrap
 class SHAPEKEYUTILS_OT_set_show_only_at_once(bpy.types.Operator):
     bl_idname = "shape_key_utils.set_show_only_at_once"
-    bl_label = "Set Show Only Active Shape Key"
-    bl_description = "Set show active shape key at once in target collection"
+    bl_label = "Set Solo Active Shape Key"
+    bl_description = "Set solo active shape key at once in target collection"
 
     show_only: bpy.props.BoolProperty(name="Show Only", default=False) # type: ignore
 

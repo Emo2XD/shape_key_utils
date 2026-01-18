@@ -61,8 +61,8 @@ class SHAPEKEYUTILS_PT_shape_key_utils(bpy.types.Panel):
         col.operator(ot.SHAPEKEYUTILS_OT_set_lock_all_at_once.bl_idname, text="", icon='DECORATE_UNLOCKED').unlock = True
 
         row = layout.row(align=True)
-        row.operator(ot.SHAPEKEYUTILS_OT_set_show_only_at_once.bl_idname, text="", icon="PINNED").show_only = True
-        row.operator(ot.SHAPEKEYUTILS_OT_set_show_only_at_once.bl_idname, text="", icon="UNPINNED").show_only = False
+        row.operator(ot.SHAPEKEYUTILS_OT_set_show_only_at_once.bl_idname, text="", icon="SOLO_ON").show_only = True
+        row.operator(ot.SHAPEKEYUTILS_OT_set_show_only_at_once.bl_idname, text="", icon="SOLO_OFF").show_only = False
 
         split = row.split(factor=0.7)
         split.separator()
